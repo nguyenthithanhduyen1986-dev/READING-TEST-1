@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSTEP Reading Practice Test</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success-color: #16a34a;
+            --danger-color: #dc2626;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .student-info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .student-info-box label {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .student-info-box input {
+            padding: 10px 14px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .student-info-box input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .passage-box {
+            background: #f1f5f9;
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            max-height: 350px;
+            overflow-y: auto;
+            font-size: 15px;
+        }
+
+        .passage-box h3 {
+            margin-top: 0;
+            color: #0f172a;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .option-label:hover {
+            background: #f8fafc;
+            border-color: var(--primary-color);
+        }
+
+        .option-label input {
+            cursor: pointer;
+        }
+
+        .submit-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Result Section */
+        .result-section {
+            display: none;
+            background: #f8fafc;
+            border: 2px solid var(--primary-color);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .result-section h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .result-details {
+            font-size: 18px;
+            margin: 15px 0;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .result-details p {
+            margin: 8px 0;
+        }
+
+        .submission-status {
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .success-status {
+            color: var(--success-color);
+        }
+
+        .error-status {
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>VSTEP Reading Practice Test</h1>
+    <div class="subtitle">Time permitted: 60 minutes | Total questions: 40</div>
+
+    <!-- Student Information -->
+    <div class="student-info-box">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" placeholder="Enter your full name here..." required>
+        <div id="nameError" class="error-msg">Please enter your student name before submitting!</div>
+    </div>
+
+    <form id="quizForm">
+        <!-- PASSAGE 1 -->
+        <div class="passage-box">
+            <h3>PASSAGE 1</h3>
+            <p>A new study, conducted by scientists from Oxford University, the Chinese Academy of Medical Sciences and the Chinese Center for Disease Control, has warned that a third of all men currently under the age of 20 in China will eventually die prematurely if they do not give up smoking.</p>
+            <p>The research, published in The Lancet medical journal, says two-thirds of men in China now start to smoke before 20. Around half of those men will die from the habit, it concludes.</p>
+            <p>In 2010, around one million people in China died from tobacco usage. But researchers say that if current trends continue, that will double to two million people-mostly men-dying every year by 2030, making it a "growing epidemic of premature death"</p>
+            <p>But co-author Richard Peto said there was hope-if people can be persuaded to quit. "The key to avoid this huge wave of deaths is cessation, and if you are a young man, don't start," he said.</p>
+            <p>In many parts of China, meals often fit a comfortable pattern. After putting down their chopsticks, men commonly push their chairs back from the table and light cigarettes. No wonder China has struggled to impose a smoking ban in public places. Here, relationships are often built amid clouds of smoke.</p>
+            <p>Expensive brands of cigarettes, often decorated with gold detailing on the cartons, are given as gifts. And ordinary brands are affordable to all but the very poor, costing just 2.5 yuan ($0.4; £0.25) a pack.</p>
+            <p>In a country where smoking is so ingrained in daily life, few understand the harmful effects of tobacco use. According to the World Health Organization (WHO), only 25% of Chinese adults can list the specific health hazards of smoking, from lung cancer to heart disease.</p>
+            <p>Perhaps it should come as no surprise, then, that only 10% of Chinese smokers quit by choice. Instead, most are forced to give up their cigarettes because they're too sick to continue.</p>
+            <p>While smoking rates have fallen in developed countries - to less than one in five in the US - they have risen in China, as cigarettes have become more available and consumers richer.</p>
+            <p>Authorities have shown concern over the rise, with Beijing even introducing a public smoking ban. But efforts have been hampered by the habit's popularity, and its usefulness as a source of tax - the government collects about 428 billion yuan ($44 billion, $67 billion) in tobacco taxes each year. Globally, tobacco kills up to half of its users, according to the World Health Organization.</p>
+        </div>
+
+        <!-- Questions 1 to 10 -->
+        <div class="question-card" data-q="1">
+            <div class="question-title">Question 1: How many Chinese men start to smoke before the age of 20?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q1" value="A"> A. one-third</label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> B. two-thirds</label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> C. half</label>
+                <label class="option-label"><input type="radio" name="q1" value="D"> D. all of them</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="2">
+            <div class="question-title">Question 2: What does the word "those men" in this paragraph refer to?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q2" value="A"> A. Men who smoke under the age of 20</label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> B. Men who smoke above the age of 20</label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> C. Men who give up smoking</label>
+                <label class="option-label"><input type="radio" name="q2" value="D"> D. Men who smoke in public</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="3">
+            <div class="question-title">Question 3: By 2030, how many men in China may die from smoking every year?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q3" value="A"> A. one million</label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> B. two million</label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> C. three million</label>
+                <label class="option-label"><input type="radio" name="q3" value="D"> D. four million</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="4">
+            <div class="question-title">Question 4: In many areas of China, when do men usually smoke?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q4" value="A"> A. Before a meal</label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> B. After a meal</label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> C. Before they go to sleep</label>
+                <label class="option-label"><input type="radio" name="q4" value="D"> D. When they get up</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="5">
+            <div class="question-title">Question 5: According to WHO, only ____ of Chinese adults can list the bad effects of smoking.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q5" value="A"> A. one-third</label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> B. one-fourth</label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> C. one-fifth</label>
+                <label class="option-label"><input type="radio" name="q5" value="D"> D. a half</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="6">
+            <div class="question-title">Question 6: "Beijing" refers to ____.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q6" value="A"> A. China</label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> B. The city of Beijing</label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> C. The Chinese government</label>
+                <label class="option-label"><input type="radio" name="q6" value="D"> D. People who live in Beijing</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="7">
+            <div class="question-title">Question 7: What is Richard Peto's attitude toward smoking in China?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q7" value="A"> A. He doesn't believe that people will give up smoking</label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> B. He is disappointed with the Chinese government.</label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> C. He thinks that people possibly stop smoking if they see reasons.</label>
+                <label class="option-label"><input type="radio" name="q7" value="D"> D. He is sure about the rise of future deaths in China.</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="8">
+            <div class="question-title">Question 8: Which of the following words does the word "hamper" have closest meaning to?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q8" value="A"> A. basket</label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> B. assist</label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> C. prohibit</label>
+                <label class="option-label"><input type="radio" name="q8" value="D"> D. restrict</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="9">
+            <div class="question-title">Question 9: What does the writer imply about the Chinese government?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q9" value="A"> A. They do not want to stop people from smoking.</label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> B. They have tried to stop people from smoking in public but with little success.</label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> C. They have tried to close tobacco companies.</label>
+                <label class="option-label"><input type="radio" name="q9" value="D"> D. They do not care about smoking.</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="10">
+            <div class="question-title">Question 10: (Additional contextual item based on Passage 1 theme) According to passage 1, what percentage of smokers in the US is mentioned?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q10" value="A"> A. less than one in four</label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> B. less than one in five</label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> C. about 25%</label>
+                <label class="option-label"><input type="radio" name="q10" value="D"> D. about 10%</label>
+            </div>
+        </div>
+
+        <!-- PASSAGE 2 -->
+        <div class="passage-box" style="margin-top: 40px;">
+            <h3>PASSAGE 2</h3>
+            <p>The evidence that humans are causing global warming is strong, but the question of what to do about it remains controversial. Economics, sociology, and politics are all important factors in planning for the future.</p>
+            <p>Even if we stopped emitting greenhouse gases (GHGs) today, the Earth would still warm by another degree Fahrenheit or so. But what we do from today forward makes a big difference. Depending on our choices, scientists predict that the Earth could eventually warm by as little as 2.5 degrees or as much as 10 degrees Fahrenheit.</p>
+            <p>A commonly cited goal is to stabilize GHG concentrations around 450-550 parts per million (ppm), or about twice pre-industrial levels. This is the point at which many believe the most damaging impacts of climate change can be avoided. Current concentrations are about 380 ppm, which means there isn't much time to lose. According to the IPCC, we'd have to reduce GHG emissions by 50% to 80% of what they're on track to be in the next century to reach this level.</p>
+            <p>Is this possible? Many people and governments are already working hard to cut greenhouse gases, and everyone can help.</p>
+            <p>Researchers Stephen Pacala and Robert Socolow at Princeton University have suggested one approach that they call "stabilization wedges." This means reducing GHG emissions from a variety of sources with technologies available in the next few decades, rather than relying on an enormous change in a single area. They suggest 7 wedges that could each reduce emissions, and all of them together could hold emissions at approximately current levels for the next 50 years, putting us on a potential path to stabilize around 500 ppm.</p>
+            <p>There are many possible wedges, including improvements to energy efficiency and vehicle fuel economy (so less energy has to be produced), and increases in wind and solar power, hydrogen produced from renewable sources, biofuels (produced from crops), natural gas, and nuclear power. There is also the potential to capture the carbon dioxide emitted from fossil fuels and store it underground - a process called "carbon sequestration."</p>
+            <p>In addition to reducing the gases we emit to the atmosphere, we can also increase the amount of gases we take out of the atmosphere. Plants and trees absorb CO2 as they grow, "sequestering" carbon naturally. Increasing forestlands and making changes to the way we farm could increase the amount of carbon we're storing.</p>
+            <p>Some of these technologies have drawbacks, and different communities will make different decisions about how to power their lives, but the good news is that there are a variety of options to put us on a path toward a stable climate.</p>
+        </div>
+
+        <!-- Questions 11 to 20 -->
+        <div class="question-card" data-q="11">
+            <div class="question-title">Question 11: The word "we" in paragraph 2 refers to … … … …</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q11" value="A"> A. humans</label>
+                <label class="option-label"><input type="radio" name="q11" value="B"> B. economists, sociologists, and politicians</label>
+                <label class="option-label"><input type="radio" name="q11" value="C"> C. animals</label>
+                <label class="option-label"><input type="radio" name="q11" value="D"> D. scientists</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="12">
+            <div class="question-title">Question 12: According to paragraph 2, how many degrees could the Earth warm up?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q12" value="A"> A. 2.5</label>
+                <label class="option-label"><input type="radio" name="q12" value="B"> B. 2.5 or 10</label>
+                <label class="option-label"><input type="radio" name="q12" value="C"> C. 10</label>
+                <label class="option-label"><input type="radio" name="q12" value="D"> D. from 2.5 to 10</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="13">
+            <div class="question-title">Question 13: According to paragraph 3, why should we stabilize GHG concentrations around 450-550 parts per million?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q13" value="A"> A. to avoid the most serious effects of climate change</label>
+                <label class="option-label"><input type="radio" name="q13" value="B"> B. to avoid all damaging impacts of climate change</label>
+                <label class="option-label"><input type="radio" name="q13" value="C"> C. to mend the most damaging impacts of climate change</label>
+                <label class="option-label"><input type="radio" name="q13" value="D"> D. to stop climate change</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="14">
+            <div class="question-title">Question 14: What does “which” in paragraph 3 refer to?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q14" value="A"> A. current concentrations</label>
+                <label class="option-label"><input type="radio" name="q14" value="B"> B. that current concentrations are about 380 ppm</label>
+                <label class="option-label"><input type="radio" name="q14" value="C"> C. 380 ppm</label>
+                <label class="option-label"><input type="radio" name="q14" value="D"> D. ppm</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="15">
+            <div class="question-title">Question 15: Why does the author mention Stephen Pacala and Robert Socolow?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q15" value="A"> A. To introduce two researchers in the field</label>
+                <label class="option-label"><input type="radio" name="q15" value="B"> B. To prove that researchers are working to reduce GHG emission</label>
+                <label class="option-label"><input type="radio" name="q15" value="C"> C. To introduce one way to reduce GHG emission</label>
+                <label class="option-label"><input type="radio" name="q15" value="D"> D. To introduce Princeton University</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="16">
+            <div class="question-title">Question 16: What stabilization wedges are NOT mentioned in the passage?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q16" value="A"> A. create environment-friendly materials</label>
+                <label class="option-label"><input type="radio" name="q16" value="B"> B. capture and store carbon dioxide underground</label>
+                <label class="option-label"><input type="radio" name="q16" value="C"> C. increase the use of renewable energy</label>
+                <label class="option-label"><input type="radio" name="q16" value="D"> D. grow more trees</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="17">
+            <div class="question-title">Question 17: What does “them” refer to?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q17" value="A"> A. researchers</label>
+                <label class="option-label"><input type="radio" name="q17" value="B"> B. humans</label>
+                <label class="option-label"><input type="radio" name="q17" value="C"> C. renewable resources</label>
+                <label class="option-label"><input type="radio" name="q17" value="D"> D. wedges</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="18">
+            <div class="question-title">Question 18: What is the best title for this passage?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q18" value="A"> A. Arguments over Global Warming</label>
+                <label class="option-label"><input type="radio" name="q18" value="B"> B. Global Warming and its Causes</label>
+                <label class="option-label"><input type="radio" name="q18" value="C"> C. Global Warming Solutions</label>
+                <label class="option-label"><input type="radio" name="q18" value="D"> D. Global Warming's Effect on Earth</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="19">
+            <div class="question-title">Question 19: "Sequestering" has the closest meaning to … … … ..</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q19" value="A"> A. absorb</label>
+                <label class="option-label"><input type="radio" name="q19" value="B"> B. isolate</label>
+                <label class="option-label"><input type="radio" name="q19" value="C"> C. release</label>
+                <label class="option-label"><input type="radio" name="q19" value="D"> D. emit</label>
+            </div>
+        </div>
+
+        <div class="question-card" data-q="20">
+            <div class="question-title">Question 20: Why does the writer mention "drawbacks" in the last paragraph?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q20" value="A"> A. To introduce the disadvantages of solutions in the following paragraph</label>
+                <label class="option-label"><input type="radio" name="q20" value="B"> B. To emphasize the disadvantages of the solutions in the previous paragraph</label>
+                <label class="option-label"><input type="radio" name="q20" value="C"> C. To recommend readers not to use the solutions</label>
+                <label class="option-label"><input type="radio" name="q20" value="D"> D. To emphasize the advantages of the solutions in different contexts</label>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-container">
+            <button type="button" class="submit-btn" onclick="submitAssignment()">Submit Assignment</button>
+        </div>
+    </form>
+
+    <!-- YOUR RESULT SECTION -->
+    <div id="resultSection" class="result-section">
+        <h2>YOUR RESULT</h2>
+        <div class="result-details">
+            <p><strong>Student Name:</strong> <span id="resName"></span></p>
+            <p><strong>Score:</strong> <span id="resScore"></span> / <span id="resTotal"></span></p>
+            <p><strong>Percentage:</strong> <span id="resPercentage"></span></p>
+        </div>
+        <div id="submissionStatus" class="submission-status"></div>
+    </div>
+</div>
+
+<!-- Hidden form and iframe for CORS-safe Google Apps Script POST -->
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+<form id="hiddenGoogleForm" action="https://script.google.com/macros/s/AKfycbzC1X5-p7BUA_3SvBRhWUcMDARmtLushscuFll_X2fREHTAJ9aQQuQId2-fmqKi1e8U/exec" method="POST" target="hidden_iframe" style="display:none;">
+    <input type="hidden" name="assignment" id="form_assignment">
+    <input type="hidden" name="name" id="form_name">
+    <input type="hidden" name="mark" id="form_mark">
+    <input type="hidden" name="total" id="form_total">
+    <input type="hidden" name="percentage" id="form_percentage">
+</form>
+
+<script>
+    const ASSIGNMENT_NAME = "VSTEP Reading Practice Test";
+    
+    // Answer Key for Questions 1-20
+    const answerKey = {
+        q1: "B",
+        q2: "A",
+        q3: "B",
+        q4: "B",
+        q5: "B",
+        q6: "C",
+        q7: "C",
+        q8: "D",
+        q9: "B",
+        q10: "B",
+        q11: "A",
+        q12: "D",
+        q13: "A",
+        q14: "B",
+        q15: "C",
+        q16: "A",
+        q17: "D",
+        q18: "C",
+        q19: "A",
+        q20: "B"
+    };
+
+    const TOTAL_QUESTIONS = 20;
+
+    function submitAssignment() {
+        // 1. Check Student Name
+        const studentNameInput = document.getElementById("studentName");
+        const nameError = document.getElementById("nameError");
+        const studentName = studentNameInput.value.trim();
+
+        if (!studentName) {
+            nameError.style.display = "block";
+            studentNameInput.focus();
+            return;
+        } else {
+            nameError.style.display = "none";
+        }
+
+        // 2. Calculate Score
+        let score = 0;
+        for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+            const radios = document.getElementsByName("q" + i);
+            let selectedVal = "";
+            for (let r of radios) {
+                if (r.checked) {
+                    selectedVal = r.value;
+                    break;
+                }
+            }
+            if (selectedVal === answerKey["q" + i]) {
+                score++;
+            }
+        }
+
+        // 3. Determine Total and Percentage
+        const total = TOTAL_QUESTIONS;
+        const percentageNum = (score / total) * 100;
+        const percentageStr = percentageNum.toFixed(2) + "%";
+
+        // 4. Display Results in YOUR RESULT section
+        document.getElementById("resName").innerText = studentName;
+        document.getElementById("resScore").innerText = score;
+        document.getElementById("resTotal").innerText = total;
+        document.getElementById("resPercentage").innerText = percentageStr;
+
+        const resultSection = document.getElementById("resultSection");
+        resultSection.style.display = "block";
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+
+        // 5. Populate and Submit hidden form to Google Apps Script via POST
+        document.getElementById("form_assignment").value = ASSIGNMENT_NAME;
+        document.getElementById("form_name").value = studentName;
+        document.getElementById("form_mark").value = score;
+        document.getElementById("form_total").value = total;
+        document.getElementById("form_percentage").value = percentageStr;
+
+        const statusDiv = document.getElementById("submissionStatus");
+        statusDiv.className = "submission-status success-status";
+        statusDiv.innerText = "Your result has been submitted successfully!";
+
+        try {
+            document.getElementById("hiddenGoogleForm").submit();
+        } catch (e) {
+            statusDiv.className = "submission-status error-status";
+            statusDiv.innerText = "Unable to submit your result. Please try again.";
+        }
+    }
+</script>
+
+</body>
+</html>
